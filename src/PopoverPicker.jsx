@@ -24,9 +24,9 @@ export const PopoverPicker = ({ color, onChange, presetColors }) => {
         <HexColorInput alpha prefixed color={value} onChange={onChange} />
       </div>
       <div className="picker__swatches">
-        {presetColors.map((presetColor) => (
+        {presetColors.map((presetColor, i) => (
           <button
-            key={presetColor}
+            key={i}
             className="picker__swatch"
             style={{ background: presetColor }}
             onClick={() => onChange(presetColor)}
