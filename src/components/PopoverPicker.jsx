@@ -1,13 +1,17 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { HexColorPicker, HexColorInput } from "react-colorful";
-import "./App.css";
+import "../App.css";
 import { useDebounce } from "use-debounce";
-import useClickOutside from "./useClickOutside";
+import useClickOutside from "../utils/useClickOutside";
 
 export const PopoverPicker = ({ color, onChange, presetColors }) => {
   const [value, setValue] = useState(color);
   const popover = useRef();
   const [isOpen, toggle] = useState(false);
+
+  // useEffect(() => {
+  //   setValue(color);
+  // }, [color]);
 
   const close = useCallback(() => toggle(false), []);
   useClickOutside(popover, close);
@@ -21,7 +25,13 @@ export const PopoverPicker = ({ color, onChange, presetColors }) => {
         onClick={() => toggle(true)}
       />
       <div>
-        <HexColorInput alpha placeholder="enter hex text" onChange={onChange} />
+        <HexColorInput
+          alpha
+          placeholder="enter hex # (000000)"
+          onChange={onChange}
+          value={value}
+          autoComplete="false"
+        />
       </div>
 
       {isOpen && (

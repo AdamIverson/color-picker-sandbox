@@ -1,8 +1,8 @@
 import React, { useCallback, useRef, useState, useMemo } from "react";
 import { HexColorInput, RgbaStringColorPicker } from "react-colorful";
-import "./App.css";
+import "../App.css";
 import { useDebounce } from "use-debounce";
-import useClickOutside from "./useClickOutside";
+import useClickOutside from "../utils/useClickOutside";
 
 // Color converter https://github.com/omgovich/colord
 import { colord, extend } from "colord";
