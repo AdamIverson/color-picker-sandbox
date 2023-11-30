@@ -158,7 +158,7 @@ const App = () => {
             autoComplete
             noOptionsText="ADD SOME OPTIONS"
             onChange={handleChange}
-            options={colorHistory.map((row, i) => row.saveState.title)}
+            options={colorHistory.map((row) => row.saveState.title)}
             renderInput={(params) => <TextField {...params} label="palettes" />}
             value={selectedPalette}
           />
