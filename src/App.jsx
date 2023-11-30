@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Autocomplete, TextField } from "@mui/material";
 import { PopoverPicker } from "./components/PopoverPicker";
+import BarChart from "./d3/BarChart";
 import "./App.css";
 
 const mockTheme = {
@@ -15,10 +16,14 @@ const App = () => {
   const [primary, setPrimary] = useState(mockTheme.one);
   const [secondary, setSecondary] = useState(mockTheme.two);
   const [tertiary, setTertiary] = useState(mockTheme.three);
+  const [quaternary, setQuaternary] = useState("");
+  const [quinternary, setQuinternary] = useState("");
+  const [sixth, setSixth] = useState("");
   const [saveState, setSaveState] = useState({});
   const [selectedPalette, setSelectedPalette] = useState();
   const [colorHistory, setColorHistory] = useState([]);
   const [showIframe, setShowIframe] = useState(false);
+  const [showBarChart, setShowBarChart] = useState(false);
 
   useEffect(() => {
     setSaveState({
@@ -26,27 +31,15 @@ const App = () => {
       primary: primary,
       secondary: secondary,
       tertiary: tertiary,
+      quaternary: quaternary,
+      quinternary: quinternary,
+      sixth: sixth,
     });
-  }, [title, primary, secondary, tertiary]);
+  }, [title, primary, secondary, tertiary, quaternary, quinternary, sixth]);
 
   const save = () => {
     setColorHistory((colorHistory) => [...colorHistory, { saveState }]);
     setTitle("");
-  };
-
-  const setTitleFun = (e) => {
-    setTitle(e.target.value);
-  };
-
-  const reset = () => {
-    setTitle("");
-    setPrimary(mockTheme.one);
-    setSecondary(mockTheme.two);
-    setTertiary(mockTheme.three);
-  };
-
-  const print = () => {
-    console.log("colorHistory", colorHistory);
   };
 
   const handleChange = (e, newValue) => {
@@ -63,6 +56,8 @@ const App = () => {
     setShowIframe(!showIframe);
   };
 
+  const options = colorHistory.map((row) => row.saveState.title);
+
   return (
     <div>
       <div
@@ -73,6 +68,11 @@ const App = () => {
           justifyContent: "space-evenly",
         }}
       >
+        {showBarChart && (
+          <div style={{ flex: 1, margin: 20 }}>
+            <BarChart colors={selectedPalette} />
+          </div>
+        )}
         {showIframe && (
           <div style={{ flex: 1 }}>
             <iframe
@@ -81,62 +81,65 @@ const App = () => {
                 margin: "20px",
                 width: "80%",
                 height: "800px",
-                scrolling: "yes",
-                overflow: "scroll",
               }}
             ></iframe>
           </div>
         )}
-        <ul style={{ listStyleType: "none" }}>
-          <li>
-            <label htmlFor="title" style={{ display: "block" }}>
-              Title
-              <input
-                style={{ display: "block" }}
-                type="text"
-                name="enter title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="enter title"
-              />
-            </label>
-          </li>
-          <li>
-            <label htmlFor={primary} style={{ display: "block" }}>
-              Primary
-              <PopoverPicker
-                color={primary}
-                onChange={setPrimary}
-                // presetColors={saveColors.primary}
-              />
-            </label>
-          </li>
-          <li>
-            <label htmlFor={primary} style={{ display: "block" }}>
-              Secondary
-              <PopoverPicker
-                color={secondary}
-                onChange={setSecondary}
-                // themeColors={saveColors.secondary}
-              />
-            </label>
-          </li>
-          <li>
-            <label htmlFor="tertiary" style={{ display: "block" }}>
-              Tertiary
-              <PopoverPicker
-                color={tertiary}
-                onChange={setTertiary}
-                // presetColors={saveColors.tertiary}
-              />
-            </label>
-          </li>
-        </ul>
+        <div>
+          <ul style={{ listStyleType: "none" }}>
+            <li>
+              <label htmlFor="title" style={{ display: "block" }}>
+                Title
+                <input
+                  style={{ display: "block" }}
+                  type="text"
+                  name="enter title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  placeholder="enter title"
+                />
+              </label>
+            </li>
+            <li>
+              <label htmlFor={primary} style={{ display: "block" }}>
+                <PopoverPicker color={primary} onChange={setPrimary} />
+              </label>
+            </li>
+            <li>
+              <label htmlFor={primary} style={{ display: "block" }}>
+                <PopoverPicker color={secondary} onChange={setSecondary} />
+              </label>
+            </li>
+            <li>
+              <label htmlFor="tertiary" style={{ display: "block" }}>
+                <PopoverPicker color={tertiary} onChange={setTertiary} />
+              </label>
+            </li>
+            <li>
+              <label htmlFor="quaternary" style={{ display: "block" }}>
+                <PopoverPicker color={quaternary} onChange={setQuaternary} />
+              </label>
+            </li>
+            <li>
+              <label htmlFor="quinternary" style={{ display: "block" }}>
+                <PopoverPicker color={quinternary} onChange={setQuinternary} />
+              </label>
+            </li>
+            <li>
+              <label htmlFor="tertiary" style={{ display: "block" }}>
+                <PopoverPicker color={sixth} onChange={setSixth} />
+              </label>
+            </li>
+          </ul>
+        </div>
         <div>
           <ul style={{ listStyleType: "none" }}>
             <li>Primary: {primary}</li>
             <li>Secondary: {secondary}</li>
             <li>Tertiary: {tertiary}</li>
+            <li>Quaternary: {quaternary}</li>
+            <li>Quinternary: {quinternary}</li>
+            <li>Sixth: {sixth}</li>
           </ul>
         </div>
       </div>
@@ -144,11 +147,8 @@ const App = () => {
         <button width="20px" onClick={save}>
           save
         </button>
-        <button width="20px" onClick={reset}>
-          reset
-        </button>
-        <button width="20px" onClick={print}>
-          print to console
+        <button width="20px" onClick={() => setShowBarChart(!showBarChart)}>
+          bar chart
         </button>
         <button onClick={toggleIframe}>palette generator</button>
       </div>
@@ -158,7 +158,7 @@ const App = () => {
             autoComplete
             noOptionsText="ADD SOME OPTIONS"
             onChange={handleChange}
-            options={colorHistory.map((row) => row.saveState.title)}
+            options={options}
             renderInput={(params) => <TextField {...params} label="palettes" />}
             value={selectedPalette}
           />
@@ -181,6 +181,13 @@ const App = () => {
                     <li key={i + row.saveState.tertiary}>
                       {row.saveState.tertiary}
                     </li>
+                    <li key={i + row.saveState.quaternary}>
+                      {row.saveState.quaternary}
+                    </li>
+                    <li key={i + row.saveState.quinternary}>
+                      {row.saveState.quinternary}
+                    </li>
+                    <li key={i + row.saveState.sixth}>{row.saveState.sixth}</li>
                   </ul>
                 </div>
               );
@@ -219,6 +226,36 @@ const App = () => {
                         height: "100px",
                         width: "100px",
                         backgroundColor: selectedPalette.saveState.tertiary,
+                      }}
+                    ></div>
+                  </li>
+                  <li>
+                    Tertiary: {selectedPalette.saveState.quaternary}
+                    <div
+                      style={{
+                        height: "100px",
+                        width: "100px",
+                        backgroundColor: selectedPalette.saveState.quaternary,
+                      }}
+                    ></div>
+                  </li>
+                  <li>
+                    Tertiary: {selectedPalette.saveState.quinternary}
+                    <div
+                      style={{
+                        height: "100px",
+                        width: "100px",
+                        backgroundColor: selectedPalette.saveState.quinternary,
+                      }}
+                    ></div>
+                  </li>
+                  <li>
+                    Tertiary: {selectedPalette.saveState.sixth}
+                    <div
+                      style={{
+                        height: "100px",
+                        width: "100px",
+                        backgroundColor: selectedPalette.saveState.sixth,
                       }}
                     ></div>
                   </li>
