@@ -9,8 +9,6 @@ export const PopoverPicker = ({ color, onChange, presetColors }) => {
   const popover = useRef();
   const [isOpen, toggle] = useState(false);
 
-  console.log("nannananan", "boboboobob")
-
   // useEffect(() => {
   //   setValue(color);
   // }, [color]);
